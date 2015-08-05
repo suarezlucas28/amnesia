@@ -252,16 +252,22 @@ Fecha = (annio + "-" + mes + "-" + dia);
         jMenuItem8 = new javax.swing.JMenuItem();
         jSeparator9 = new javax.swing.JPopupMenu.Separator();
         jMenuItem12 = new javax.swing.JMenuItem();
+        jSeparator11 = new javax.swing.JPopupMenu.Separator();
+        jMenuItem13 = new javax.swing.JMenuItem();
         jMenu1 = new javax.swing.JMenu();
         jMenuItem1 = new javax.swing.JMenuItem();
         jSeparator1 = new javax.swing.JPopupMenu.Separator();
         jMenuItem2 = new javax.swing.JMenuItem();
         jSeparator4 = new javax.swing.JPopupMenu.Separator();
         jMenuItem6 = new javax.swing.JMenuItem();
+        jSeparator12 = new javax.swing.JPopupMenu.Separator();
+        jMenuItem14 = new javax.swing.JMenuItem();
         jSeparator15 = new javax.swing.JPopupMenu.Separator();
         jMenuItem20 = new javax.swing.JMenuItem();
         jSeparator8 = new javax.swing.JPopupMenu.Separator();
         jMenuItem21 = new javax.swing.JMenuItem();
+        jSeparator10 = new javax.swing.JPopupMenu.Separator();
+        jMenuItem22 = new javax.swing.JMenuItem();
         jMenu2 = new javax.swing.JMenu();
         jMenuItem9 = new javax.swing.JMenuItem();
         jSeparator6 = new javax.swing.JPopupMenu.Separator();
@@ -470,6 +476,17 @@ Fecha = (annio + "-" + mes + "-" + dia);
             }
         });
         jMenu3.add(jMenuItem12);
+        jMenu3.add(jSeparator11);
+
+        jMenuItem13.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_C, java.awt.event.InputEvent.SHIFT_MASK));
+        jMenuItem13.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
+        jMenuItem13.setText("COMPRAS DE BEBIDAS");
+        jMenuItem13.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem13ActionPerformed(evt);
+            }
+        });
+        jMenu3.add(jMenuItem13);
 
         jMenuBar1.add(jMenu3);
 
@@ -504,6 +521,16 @@ Fecha = (annio + "-" + mes + "-" + dia);
             }
         });
         jMenu1.add(jMenuItem6);
+        jMenu1.add(jSeparator12);
+
+        jMenuItem14.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
+        jMenuItem14.setText("DETALLE DE COMBO");
+        jMenuItem14.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem14ActionPerformed(evt);
+            }
+        });
+        jMenu1.add(jMenuItem14);
         jMenu1.add(jSeparator15);
 
         jMenuItem20.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
@@ -524,6 +551,16 @@ Fecha = (annio + "-" + mes + "-" + dia);
             }
         });
         jMenu1.add(jMenuItem21);
+        jMenu1.add(jSeparator10);
+
+        jMenuItem22.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
+        jMenuItem22.setText("PROVEEDORES");
+        jMenuItem22.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem22ActionPerformed(evt);
+            }
+        });
+        jMenu1.add(jMenuItem22);
 
         jMenuBar1.add(jMenu1);
 
@@ -1678,6 +1715,204 @@ if (usuario != 1){
         }        // TODO add your handling code here:
     }//GEN-LAST:event_jMenuItem12ActionPerformed
 
+    private void jMenuItem22ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem22ActionPerformed
+    if (usuario != 1){
+        ver_conex conn =new ver_conex();//instanciamos
+        try {
+            conn.sentencia = conn.conexion.createStatement();
+        } catch (SQLException ex) {
+            Logger.getLogger(menu.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        try {
+            conn.resultado = conn.sentencia.executeQuery("SELECT pan_codigo,usu_codigo,per_permis FROM permisos WHERE pan_codigo = 13 and usu_codigo = " + usuario);
+        } catch (SQLException ex) {
+            Logger.getLogger(menu.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        try {
+            conn.resultado.next();
+        } catch (SQLException ex) {
+            Logger.getLogger(menu.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        try {
+            permiso = conn.resultado.getInt("per_permis");
+        } catch (SQLException ex) {
+            Logger.getLogger(menu.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+
+        if(permiso == 1) // todo bien
+        {
+            try {
+                jgenerador = new JDialog();
+                jgenerador.getContentPane().add(new proveedores());
+                jgenerador.setTitle("PROVEEDORES");
+                ImageIcon icono = new ImageIcon("\\amnesia\\src\\imag\\software.png");
+                jgenerador.setIconImage(icono.getImage());
+                jgenerador.pack();
+                jgenerador.setLocationRelativeTo(null);
+                jgenerador.setModal(true);
+                jgenerador.setResizable(false);
+                proveedores.btnagregar.requestFocus();
+                jgenerador.setVisible(true);
+            } catch (SQLException ex) {
+                Logger.getLogger(menu.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        } else // error
+        {
+            JOptionPane.showMessageDialog(null, "No tiene Permisos para acceder a este formulario" , "Verifique",
+            JOptionPane.INFORMATION_MESSAGE);// salir del sistema
+        } 
+        } else {
+          try {
+                jgenerador = new JDialog();
+                jgenerador.getContentPane().add(new proveedores());
+                jgenerador.setTitle("PROVEEDORES");
+                ImageIcon icono = new ImageIcon("\\amnesia\\src\\imag\\software.png");
+                jgenerador.setIconImage(icono.getImage());
+                jgenerador.pack();
+                jgenerador.setLocationRelativeTo(null);
+                jgenerador.setModal(true);
+                jgenerador.setResizable(false);
+                proveedores.btnagregar.requestFocus();
+                jgenerador.setVisible(true);
+            } catch (SQLException ex) {
+                Logger.getLogger(menu.class.getName()).log(Level.SEVERE, null, ex);
+            }  
+        }
+    }//GEN-LAST:event_jMenuItem22ActionPerformed
+
+    private void jMenuItem13ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem13ActionPerformed
+    if (usuario != 1){
+        ver_conex conn =new ver_conex();//instanciamos
+        try {
+            conn.sentencia = conn.conexion.createStatement();
+        } catch (SQLException ex) {
+            Logger.getLogger(menu.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        try {
+            conn.resultado = conn.sentencia.executeQuery("SELECT pan_codigo,usu_codigo,per_permis FROM permisos WHERE pan_codigo = 14 and usu_codigo = " + usuario);
+        } catch (SQLException ex) {
+            Logger.getLogger(menu.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        try {
+            conn.resultado.next();
+        } catch (SQLException ex) {
+            Logger.getLogger(menu.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        try {
+            permiso = conn.resultado.getInt("per_permis");
+        } catch (SQLException ex) {
+            Logger.getLogger(menu.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+
+        if(permiso == 1) // todo bien
+        {
+            try {
+                jgenerador = new JDialog();
+                jgenerador.getContentPane().add(new comprabebidas());
+                jgenerador.setTitle("COMPRAS DE BEBIDAS");
+                ImageIcon icono = new ImageIcon("\\amnesia\\src\\imag\\software.png");
+                jgenerador.setIconImage(icono.getImage());
+                jgenerador.pack();
+                jgenerador.setLocationRelativeTo(null);
+                jgenerador.setModal(true);
+                jgenerador.setResizable(false);
+                comprabebidas.btngrabar.requestFocus();
+                jgenerador.setVisible(true);
+            } catch (SQLException ex) {
+                Logger.getLogger(menu.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        } else // error
+        {
+            JOptionPane.showMessageDialog(null, "No tiene Permisos para acceder a este formulario" , "Verifique",
+            JOptionPane.INFORMATION_MESSAGE);// salir del sistema
+        } 
+        } else {
+          try {
+                jgenerador = new JDialog();
+                jgenerador.getContentPane().add(new comprabebidas());
+                jgenerador.setTitle("COMPRAS DE BEBIDAS");
+                ImageIcon icono = new ImageIcon("\\amnesia\\src\\imag\\software.png");
+                jgenerador.setIconImage(icono.getImage());
+                jgenerador.pack();
+                jgenerador.setLocationRelativeTo(null);
+                jgenerador.setModal(true);
+                jgenerador.setResizable(false);
+                comprabebidas.btngrabar.requestFocus();
+                jgenerador.setVisible(true);
+            } catch (SQLException ex) {
+                Logger.getLogger(menu.class.getName()).log(Level.SEVERE, null, ex);
+            }  
+        }
+    }//GEN-LAST:event_jMenuItem13ActionPerformed
+
+    private void jMenuItem14ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem14ActionPerformed
+if (usuario != 1){   
+        ver_conex conn =new ver_conex();//instanciamos
+        try {
+            conn.sentencia = conn.conexion.createStatement();
+        } catch (SQLException ex) {
+            Logger.getLogger(menu.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        try {
+            conn.resultado = conn.sentencia.executeQuery("SELECT pan_codigo,usu_codigo,per_permis FROM permisos WHERE pan_codigo = 15 and usu_codigo = " + usuario);
+        } catch (SQLException ex) {
+            Logger.getLogger(menu.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        try {
+            conn.resultado.next();
+        } catch (SQLException ex) {
+            Logger.getLogger(menu.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        try {
+            permiso = conn.resultado.getInt("per_permis");
+        } catch (SQLException ex) {
+            Logger.getLogger(menu.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+
+        if(permiso == 1) // todo bien
+        {
+            try {
+                jgenerador = new JDialog();
+                jgenerador.getContentPane().add(new detalle_articulo());
+                jgenerador.setTitle("DETALLE DE COMBO");
+                ImageIcon icono = new ImageIcon("\\amnesia\\src\\imag\\software.png");
+                jgenerador.setIconImage(icono.getImage());
+                jgenerador.pack();
+                jgenerador.setLocationRelativeTo(null);
+                jgenerador.setModal(true);
+                jgenerador.setResizable(false);
+                //articulos.btnagregar.requestFocus();
+                jgenerador.setVisible(true);
+            } catch (SQLException ex) {
+                Logger.getLogger(menu.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        } else // error
+        {
+            JOptionPane.showMessageDialog(null, "No tiene Permisos para acceder a este formulario" , "Verifique",
+            JOptionPane.INFORMATION_MESSAGE);// salir del sistema
+        }
+        } else {
+            try {
+                jgenerador = new JDialog();
+                jgenerador.getContentPane().add(new detalle_articulo());
+                jgenerador.setTitle("DETALLE DE COMBO");
+                ImageIcon icono = new ImageIcon("\\amnesia\\src\\imag\\software.png");
+                jgenerador.setIconImage(icono.getImage());
+                jgenerador.pack();
+                jgenerador.setLocationRelativeTo(null);
+                jgenerador.setModal(true);
+                jgenerador.setResizable(false);
+                //articulos.btnagregar.requestFocus();
+                jgenerador.setVisible(true);
+            } catch (SQLException ex) {
+                Logger.getLogger(menu.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }        // TODO add your handling code here:
+    }//GEN-LAST:event_jMenuItem14ActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -1738,9 +1973,12 @@ if (usuario != 1){
     private javax.swing.JMenuItem jMenuItem10;
     private javax.swing.JMenuItem jMenuItem11;
     private javax.swing.JMenuItem jMenuItem12;
+    private javax.swing.JMenuItem jMenuItem13;
+    private javax.swing.JMenuItem jMenuItem14;
     private javax.swing.JMenuItem jMenuItem2;
     private javax.swing.JMenuItem jMenuItem20;
     private javax.swing.JMenuItem jMenuItem21;
+    private javax.swing.JMenuItem jMenuItem22;
     private javax.swing.JMenuItem jMenuItem3;
     private javax.swing.JMenuItem jMenuItem4;
     private javax.swing.JMenuItem jMenuItem5;
@@ -1750,6 +1988,9 @@ if (usuario != 1){
     private javax.swing.JMenuItem jMenuItem9;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JPopupMenu.Separator jSeparator1;
+    private javax.swing.JPopupMenu.Separator jSeparator10;
+    private javax.swing.JPopupMenu.Separator jSeparator11;
+    private javax.swing.JPopupMenu.Separator jSeparator12;
     private javax.swing.JPopupMenu.Separator jSeparator15;
     private javax.swing.JPopupMenu.Separator jSeparator2;
     private javax.swing.JPopupMenu.Separator jSeparator3;
