@@ -462,7 +462,7 @@ String arti= cboarticulos.getSelectedItem().toString();
                 if (conn.resultado.first() == true){
                       
                     conn.sentencia = conn.conexion.createStatement();
-                    conn.resultado = conn.sentencia.executeQuery("SELECT detalle_articulo.art_codigo,art_descri,det_cantidad FROM `detalle_articulo`,articulo WHERE  art_cabecera = articulo.art_codigo AND `art_cabecera` = "+articulo);
+                    conn.resultado = conn.sentencia.executeQuery("SELECT detalle_articulo.art_codigo,art_descri,det_cantidad FROM `detalle_articulo`,articulo WHERE  `detalle_articulo`.`art_codigo` = articulo.art_codigo AND `art_cabecera` = "+articulo);
 
                     mdetalle.setRowCount(0);
                     Object [] fila3 = new Object[3];

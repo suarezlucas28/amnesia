@@ -5,6 +5,7 @@
 package form;
 
 import java.awt.event.KeyEvent;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -250,17 +251,44 @@ conn.resultado.first();
     }//GEN-LAST:event_grillaMouseClicked
 
     private void btnanularActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnanularActionPerformed
-    try {
-        ver_conex  conn = new ver_conex();
-        conn.sentencia = conn.conexion.createStatement();
-        conn.sentencia.executeUpdate("UPDATE `venta` SET `ven_estado` = 'ANULADO' WHERE `ven_codigo` = " + lblcodigo.getText()); //OJO LE PASO LA SENTENCIA
-        conn.sentencia.executeUpdate("UPDATE `cc_test` SET `cco_estado` = 'ANULADO' WHERE `cco_segun` = 'venta "+lblcodigo.getText()+"'"); //OJO LE PASO LA SENTENCIA
-        JOptionPane.showMessageDialog(null, "El registro se ha anulado correctamente", "Atención", JOptionPane.INFORMATION_MESSAGE);
-        btncancelar.doClick();
-    } catch (SQLException ex) {
-        Logger.getLogger(anularventa.class.getName()).log(Level.SEVERE, null, ex);
-    }
+        try {
+            ver_conex  conn = new ver_conex();
+                conn.sentencia = conn.conexion.createStatement();
+                ResultSet resultado1 = conn.sentencia.executeQuery("SELECT venta_detalle.`art_codigo`,`vde_cantid` FROM `venta_detalle` WHERE `ven_codigo` = " + lblcodigo.getText());
+                    while (resultado1.next()){
+                        System.out.println(Integer.parseInt(resultado1.getString("art_codigo")));
+                        int codigo = Integer.parseInt(resultado1.getString("art_codigo"));
 
+                        conn.sentencia = conn.conexion.createStatement();
+                        conn.resultado = conn.sentencia.executeQuery("SELECT detalle_articulo.art_codigo FROM `detalle_articulo` WHERE `art_cabecera` = "+codigo);
+                        System.out.println("hi");
+                        
+                        if (conn.resultado.first() == true){
+                            System.out.println(conn.resultado.first() == true);
+                            conn.sentencia = conn.conexion.createStatement();
+                            conn.resultado = conn.sentencia.executeQuery("SELECT detalle_articulo.art_codigo,det_cantidad FROM `detalle_articulo` WHERE `art_cabecera` = "+codigo);
+
+                            while (conn.resultado.next()){
+
+                                conn.sentencia = conn.conexion.createStatement();
+                                String SQL1 = "CALL agregarstockventas ("+conn.resultado.getObject(1).toString()+","+conn.resultado.getObject(2).toString()+")";
+                                conn.sentencia.executeUpdate(SQL1);
+                            }
+                        } else {
+                            conn.sentencia = conn.conexion.createStatement();
+                            String SQL1 = "CALL agregarstockventas ("+codigo+",1)";
+                            conn.sentencia.executeUpdate(SQL1);
+                        }
+               }   
+            conn.sentencia = conn.conexion.createStatement();
+            conn.sentencia.executeUpdate("UPDATE `venta` SET `ven_estado` = 'ANULADO' WHERE `ven_codigo` = " + lblcodigo.getText()); //OJO LE PASO LA SENTENCIA
+            conn.sentencia.executeUpdate("UPDATE `cc_test` SET `cco_estado` = 'ANULADO' WHERE `cco_segun` = 'venta "+lblcodigo.getText()+"'"); //OJO LE PASO LA SENTENCIA
+            JOptionPane.showMessageDialog(null, "El registro se ha anulado correctamente", "Atención", JOptionPane.INFORMATION_MESSAGE);
+            btncancelar.doClick();
+                
+        } catch (SQLException ex) {
+            Logger.getLogger(anularventa.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_btnanularActionPerformed
 
     private void btnanularKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_btnanularKeyPressed

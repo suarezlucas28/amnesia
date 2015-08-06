@@ -620,6 +620,26 @@ try {
             conn.sentencia = conn.conexion.createStatement();
             String insercionSQL1="INSERT INTO `venta_detalle` (`ven_codigo`,`art_codigo`,`vde_cantid`,`vde_subtot`) VALUES ("+codigo_venta+","+codigo+",1,"+subtotal+")";
             stmta.executeUpdate(insercionSQL1);
+            
+            conn.sentencia = conn.conexion.createStatement();
+            conn.resultado = conn.sentencia.executeQuery("SELECT detalle_articulo.art_codigo FROM `detalle_articulo` WHERE `art_cabecera` = "+codigo);
+            if (conn.resultado.first() == true){
+
+                conn.sentencia = conn.conexion.createStatement();
+                conn.resultado = conn.sentencia.executeQuery("SELECT detalle_articulo.art_codigo,det_cantidad FROM `detalle_articulo` WHERE `art_cabecera` = "+codigo);
+
+                while (conn.resultado.next()){
+                    
+                    conn.sentencia = conn.conexion.createStatement();
+                    String SQL1 = "CALL disminuirstockventas ("+conn.resultado.getObject(1).toString()+","+conn.resultado.getObject(2).toString()+")";
+                    conn.sentencia.executeUpdate(SQL1);
+                }
+            } else {
+                conn.sentencia = conn.conexion.createStatement();
+                String SQL1 = "CALL disminuirstockventas ("+codigo+",1)";
+                conn.sentencia.executeUpdate(SQL1);
+            }
+            
             c++;
         }
         if (cbocliente.getSelectedItem().toString().equals("SIN CLIENTE")){

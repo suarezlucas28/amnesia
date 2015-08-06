@@ -121,7 +121,7 @@ public void cargaproveedor() throws SQLException{
 }
 
  public int buscaproveedor(String a) throws ClassNotFoundException, InstantiationException, IllegalAccessException, SQLException{
-    String SQL = "SELECT * from proveedor where pro_nomape = '" + cboproveedor.getSelectedItem() +"'" ;
+    String SQL = "SELECT * from proveedor where pro_nombre = '" + cboproveedor.getSelectedItem() +"'" ;
     ver_conex  conn = new ver_conex();
     conn.sentencia = conn.conexion.createStatement();
     conn.resultado = conn.sentencia.executeQuery(SQL);
@@ -493,37 +493,35 @@ btngrabar.setEnabled(false);
 try {                                          
     Fecha("Fecha");
     proveedor = buscaproveedor((String) cboproveedor.getSelectedItem());
-    String SQL = "INSERT INTO `venta` (`usu_codigo`,`cli_codigo`,`ven_horfec`,`ven_total`) VALUES ("+acceso.usuario+","+proveedor+",'"+fechahora+"',"+String.valueOf(Float.parseFloat(txttotal.getText()))+")";
+    String SQL = "INSERT INTO `compras` (`pro_codigo`,`usu_codigo`,`com_fechor`,`com_total`) VALUES ("+proveedor+","+acceso.usuario+",'"+fechahora+"',"+String.valueOf(Float.parseFloat(txttotal.getText()))+")";
     ver_conex conn =new ver_conex();//instanciamos
     conn.sentencia = conn.conexion.createStatement();
     conn.sentencia.executeUpdate(SQL);//OJO LE PASO LA SENTENCIA
-    String Codigo = "SELECT * FROM venta ORDER BY ven_codigo DESC LIMIT 1" ;
+    String Codigo = "SELECT * FROM compras ORDER BY com_codigo DESC LIMIT 1" ;
     conn.sentencia = conn.conexion.createStatement();
     conn.resultado = conn.sentencia.executeQuery(Codigo);
     conn.resultado.next();
-    int codigo_venta = (conn.resultado.getInt("ven_codigo"));
-    codigo_ticket = codigo_venta;
+    int codigo_cobro = (conn.resultado.getInt("com_codigo"));
+    codigo_ticket = codigo_cobro;
     try {
         javax.swing.table.TableModel model = gdetalle.getModel();
         int c = 0;
         for (int i = 0; i < model.getRowCount(); i++) {
             
-            Object codigo    =gdetalle.getValueAt(i,0);Statement stmta=null;
-            stmta=(Statement) conn.conexion.createStatement();
-            Object subtotal    =gdetalle.getValueAt(i,2);
-            conn.sentencia = conn.conexion.createStatement();
-            String insercionSQL1="INSERT INTO `venta_detalle` (`ven_codigo`,`art_codigo`,`vde_cantid`,`vde_subtot`) VALUES ("+codigo_venta+","+codigo+",1,"+subtotal+")";
-            stmta.executeUpdate(insercionSQL1);
-            c++;
-        }
-        if (cboproveedor.getSelectedItem().toString().equals("SIN CLIENTE")){
-        } else {
+            Object codigo    =gdetalle.getValueAt(i,0);
+            Object costo    =gdetalle.getValueAt(i,2);
+            Object cantidad    =gdetalle.getValueAt(i,3);
+            Object subtotal    =gdetalle.getValueAt(i,4);
             Statement stmta=null;
             stmta=(Statement) conn.conexion.createStatement();
             conn.sentencia = conn.conexion.createStatement();
-            String insercionSQL1="INSERT INTO `cc_test` (`cli_codigo`,`cco_moncom`,`cco_monent`,`cco_segun`,`cco_fecha`) VALUES ("+proveedor+","+String.valueOf(Float.parseFloat(txttotal.getText()))+",0,'venta "+codigo_venta+"','"+Fecha+"')";
+            String insercionSQL1="INSERT INTO `compras_detalle`(`com_codigo`,`art_codigo`,`com_cosuni`,`com_cantid`,`com_costot`) VALUES ("+codigo_cobro+","+codigo+","+costo+","+cantidad+","+subtotal+")";
             stmta.executeUpdate(insercionSQL1);
+            conn.sentencia = conn.conexion.createStatement();
+            conn.sentencia.executeUpdate("CALL `agregarstockcompras` ("+codigo+","+cantidad+")");
+            c++;
         }
+        
     }catch (SQLException e) {
         e.printStackTrace();
         JOptionPane.showMessageDialog(null, "Ocurrio un error "+e.toString(),"Atención ", JOptionPane.INFORMATION_MESSAGE);
@@ -554,8 +552,9 @@ try {
             JOptionPane.showMessageDialog(this, "El campo está vacío, Cargue los datos correctamente");
             return;
         } else {
-            txtcostounitario.setText(String.valueOf(Redondear(Float.parseFloat(txtcostounitario.getText()))));
-            //txtcostounitario.setEnabled(false);
+            txtcostounitario.setText(String.valueOf(Integer.parseInt(txtcostounitario.getText())));
+            txtcantidad.setEnabled(true);
+            txtcantidad.requestFocus();
             //btngrabar.setEnabled(true);
             //btngrabar.requestFocus();
         }
@@ -596,7 +595,7 @@ try {
             return;
         } else {
             try {
-                txtcantidad.setText(String.valueOf(Redondear(Float.parseFloat(txtcantidad.getText()))));
+                txtcantidad.setText(String.valueOf(Integer.parseInt(txtcantidad.getText())));
                 txtcostounitario.setText(String.valueOf(Redondear(Float.parseFloat(txtcostounitario.getText()))));
                 txtcantidad.setEnabled(false);
                 txtcostounitario.setEnabled(false);
@@ -610,7 +609,7 @@ try {
                 datos[1] = codigo_descri;
                 datos[2] = txtcostounitario.getText();
                 datos[3] = txtcantidad.getText();
-                datos[4] = String.valueOf(Float.parseFloat(txtcantidad.getText())*Float.parseFloat(txtcostounitario.getText()));
+                datos[4] = String.valueOf(Integer.parseInt(txtcantidad.getText())*Float.parseFloat(txtcostounitario.getText()));
                 if (existe == false){
                     mdetalle.addRow(datos);
                 } else {
